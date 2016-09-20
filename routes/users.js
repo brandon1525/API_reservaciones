@@ -2,14 +2,12 @@
 
 module.exports = function(app) {
   var User        = require('../models/user');
-  var config    = require('../config/database');
+  var config      = require('../config/database');
   var jwt         = require('jwt-simple');
   //GET - Return all users in the DB
   findAllUsers = function(req, res) {
   	User.find(function(err, users) {
   		if(!err) {
-        console.log(users);
-        //console.log('GET /users');
   			res.send(users);
   		} else {
   			console.log('ERROR: ' + err);
@@ -21,9 +19,6 @@ module.exports = function(app) {
   findById = function(req, res) {
   	User.findById(req.params.id, function(err, user) {
   		if(!err) {
-        //console.log('GET /user/' + req.params.id);
-        //console.log(user);
-  			//res.send(res.json(user));
         res.json(user);
   		} else {
   			console.log('ERROR: ' + err);
@@ -37,6 +32,7 @@ module.exports = function(app) {
   		nombre : req.body.nombre,
   		apellido_p : req.body.apellido_p,
   		apellido_m : req.body.apellido_m,
+      telefono : req.body.telefono,
   		sexo : req.body.sexo,
   		edad : req.body.edad,
       usuario : req.body.usuario,
@@ -48,7 +44,7 @@ module.exports = function(app) {
         res.json({success: true, msg: 'Usuario creado con exito.'});
   		} else {
   			console.log('ERROR: ' + err);
-        return res.json({success: false, msg: 'Username already exists.', err: err});
+        return res.json({success: false, msg: 'Usuario ya existe.', err: err});
   		}
   	});
   	//res.send(user);
@@ -60,6 +56,7 @@ module.exports = function(app) {
   		user.nombre   = req.body.nombre;
   		user.apellido_p    = req.body.apellido_p;
   		user.apellido_m = req.body.apellido_m;
+      user.telefono  = req.body.telefono;
   		user.sexo  = req.body.sexo;
   		user.edad = req.body.edad;
 
@@ -98,7 +95,7 @@ module.exports = function(app) {
         user.comparePassword(req.body.password, function (err, isMatch) {
           if (isMatch && !err) {
             var token = jwt.encode(user, config.secret);
-            res.json({success: true, token: 'JWT ' + token});
+            res.json({success: true, token: 'JWT ' + token, usuario: user});
           } else {
             res.send({success: false, msg: 'Authentication failed. Password incorrecto.'});
           }

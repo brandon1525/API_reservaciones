@@ -15,12 +15,16 @@ var usuarioSchema = new Schema({
 		type : String,
 		required: true
 	},
+	telefono : {
+		type : String,
+		required: true
+	},
 	sexo : {
 		type : String,
 		required: true
 	},
 	edad : {
-		type : Number,
+		type : Date,
 		required: true
 	},
 	usuario : {
@@ -31,6 +35,10 @@ var usuarioSchema = new Schema({
 	password : {
 		type : String,
 		required: true
+	},
+	creado : {
+		type: Date,
+		default: Date.now
 	}
 });
 
