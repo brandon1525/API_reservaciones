@@ -1,5 +1,3 @@
-//File: routes/users.js
-
 module.exports = function(app) {
   var User        = require('../models/user');
   var config      = require('../config/database');
@@ -29,13 +27,14 @@ module.exports = function(app) {
   //POST - Insert a new User in the DB
   addUser = function(req, res) {
   	var user = new User({
-  		nombre : req.body.nombre,
-  		apellido_p : req.body.apellido_p,
-  		apellido_m : req.body.apellido_m,
-      telefono : req.body.telefono,
-  		sexo : req.body.sexo,
-  		edad : req.body.edad,
-      usuario : req.body.usuario,
+  		name : req.body.name,
+  		last_name_p : req.body.last_name_p,
+  		last_name_m : req.body.last_name_m,
+      phone : req.body.phone,
+  		sex : req.body.sex,
+  		date_b : req.body.date_b,
+      type_user : req.body.type_user,
+      user : req.body.user,
       password : req.body.password
   	});
   	user.save(function(err) {
@@ -44,7 +43,7 @@ module.exports = function(app) {
         res.json({success: true, msg: 'Usuario creado con exito.'});
   		} else {
   			console.log('ERROR: ' + err);
-        return res.json({success: false, msg: 'Usuario ya existe.', err: err});
+        return res.json({success: false, msg: 'Usuario ya existe.'});
   		}
   	});
   	//res.send(user);
@@ -53,16 +52,18 @@ module.exports = function(app) {
   //PUT - Update a register already exists
   updateUser = function(req, res) {
   	User.findById(req.params.id, function(err, user) {
-  		user.nombre   = req.body.nombre;
-  		user.apellido_p    = req.body.apellido_p;
-  		user.apellido_m = req.body.apellido_m;
-      user.telefono  = req.body.telefono;
-  		user.sexo  = req.body.sexo;
-  		user.edad = req.body.edad;
-
+      user.name = req.body.name;
+  		user.last_name_p = req.body.last_name_p;
+  		user.last_name_m = req.body.last_name_m;
+      user.phone = req.body.phone;
+  		user.sex = req.body.sex;
+  		user.date_b = req.body.date_b;
+      user.type_user = req.body.type_user;
+      user.user = req.body.user;
+      user.password = req.body.password;
   		user.save(function(err) {
   			if(!err) {
-  				console.log('Updated');
+  				console.log('Actualizado');
   			} else {
   				console.log('ERROR: ' + err);
   			}
@@ -86,16 +87,15 @@ module.exports = function(app) {
   }
 
   authenticateUser = function(req, res){
-    User.findOne({usuario: req.body.usuario}, function(err, user) {
+    User.findOne({user: req.body.user}, function(err, user) {
       if (err) throw err;
       if (!user) {
         res.send({success: false, msg: 'Authentication failed. Usuario no encontrado.'});
       } else {
-        // check if password matches
         user.comparePassword(req.body.password, function (err, isMatch) {
           if (isMatch && !err) {
             var token = jwt.encode(user, config.secret);
-            res.json({success: true, token: 'JWT ' + token, usuario: user});
+            res.json({success: true, token: 'JWT ' + token, user: user});
           } else {
             res.send({success: false, msg: 'Authentication failed. Password incorrecto.'});
           }

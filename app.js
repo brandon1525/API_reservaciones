@@ -53,12 +53,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 var routes = require('./routes/index');
 
 var users = require('./routes/users')(app);
+var places = require('./routes/places')(app);
+var reservations = require('./routes/reservations')(app);
+
 //var login = require('./routes/login')(app);
 
 app.use('/', routes);
 
 
 var config = require('./config/database');
+
+mongoose.Promise = global.Promise;
 
 // Connection to DB
 mongoose.connect(config.database, function(err, res) {

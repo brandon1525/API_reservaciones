@@ -2,40 +2,30 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var reservationSchema = new Schema({
-	user_responsable : {
-		type : String,
-		required: true
+	user_responsible: {
+		type : Schema.Types.ObjectId,
+		ref : 'User',
+    required : true
 	},
-	apellido_p : {
-		type : String,
-		required: true
+	place : {
+		type : Schema.Types.ObjectId,
+		ref : 'Place',
+    required : true
 	},
-	apellido_m : {
-		type : String,
-		required: true
-	},
-	telefono : {
-		type : String,
-		required: true
-	},
-	sexo : {
-		type : String,
-		required: true
-	},
-	edad : {
+	date_reservation : {
 		type : Date,
 		required: true
 	},
-	usuario : {
+	no_people : {
+		type : Date,
+		required: true
+	},
+	qr_code : {
 		type : String,
 		unique: true,
 		required: true
 	},
-	password : {
-		type : String,
-		required: true
-	},
-	creado : {
+	create_at : {
 		type: Date,
 		default: Date.now
 	}

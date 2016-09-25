@@ -2,47 +2,52 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var bcrypt = require('bcrypt');
 
-var usuarioSchema = new Schema({
-	nombre : {
+var userSchema = new Schema({
+	name : {
 		type : String,
 		required: true
 	},
-	apellido_p : {
+	last_name_p : {
 		type : String,
 		required: true
 	},
-	apellido_m : {
+	last_name_m : {
 		type : String,
 		required: true
 	},
-	telefono : {
+	phone : {
 		type : String,
 		required: true
 	},
-	sexo : {
+	sex : {
 		type : String,
 		required: true
 	},
-	edad : {
+	date_b : {
 		type : Date,
 		required: true
 	},
-	usuario : {
+	type_user : {
 		type : String,
-		unique: true,
+		required: true
+	},
+	user : {
+		type : String,
+		unique : true,
+		index : true,
 		required: true
 	},
 	password : {
 		type : String,
 		required: true
 	},
-	creado : {
+	create_at : {
 		type: Date,
 		default: Date.now
 	}
 });
 
-usuarioSchema.pre('save', function (next) {
+userSchema.pre('save', function (next) {
 	var user = this;
 	if (this.isModified('password') || this.isNew) {
 		bcrypt.genSalt(10, function (err, salt) {
@@ -62,7 +67,7 @@ usuarioSchema.pre('save', function (next) {
 	}
 });
 
-usuarioSchema.methods.comparePassword = function (passw, cb) {
+userSchema.methods.comparePassword = function (passw, cb) {
 	bcrypt.compare(passw, this.password, function (err, isMatch) {
 		if (err) {
 			return cb(err);
@@ -71,4 +76,4 @@ usuarioSchema.methods.comparePassword = function (passw, cb) {
 	});
 };
 
-module.exports = mongoose.model('User', usuarioSchema);
+module.exports = mongoose.model('User', userSchema);
