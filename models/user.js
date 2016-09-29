@@ -28,7 +28,7 @@ var userSchema = new Schema({
 		required: true
 	},
 	type_user : {
-		type : String,
+		type : Number,
 		required: true
 	},
 	user : {

@@ -40,10 +40,29 @@ module.exports = function(app) {
   	user.save(function(err) {
   		if(!err) {
   			console.log('Created');
-        res.json({success: true, msg: 'Usuario creado con exito.'});
+        res.json(
+          {
+            success: true,
+            msg: 'Usuario creado con exito.',
+            user_data: {
+              id: user._id,
+              name: user.name,
+              last_name_p: user.last_name_p,
+              last_name_m: user.last_name_m,
+              phone: user.phone,
+              sex: user.sex,
+              date_b: user.date_b,
+              type_user: user.type_user,
+              user: user.user
+            }
+          });
   		} else {
   			console.log('ERROR: ' + err);
-        return res.json({success: false, msg: 'Usuario ya existe.'});
+        if(err.code==11000){
+          return res.json({success: false, msg: 'Usuario ya existe.'});
+        }else{
+          return res.json({success: false, msg: "Error del sistema comunicate con tu administrador"});
+        }
   		}
   	});
   	//res.send(user);

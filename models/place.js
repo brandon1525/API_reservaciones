@@ -15,14 +15,6 @@ var placeSchema = new Schema({
 		type : Number,
 		required: true
 	},
-	lat : {
-		type : String,
-		required: true
-	},
-	lon : {
-		type : String,
-		required: true
-	},
   type : {
 		type : String,
 		required: true

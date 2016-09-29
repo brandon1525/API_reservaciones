@@ -1,4 +1,3 @@
-
 module.exports = function(app) {
   var Place = require('../models/place');
 
@@ -13,7 +12,6 @@ module.exports = function(app) {
       res.json(places);
     });
   };
-
 
   //GET - Return a Place with specified ID
   findById = function(req, res) {
@@ -33,18 +31,23 @@ module.exports = function(app) {
   		name : req.body.name,
   		description : req.body.description,
   		total_people : req.body.total_people,
-      lat : req.body.lat,
-  		lon : req.body.lon,
       type : req.body.type,
       owner : req.body.owner
   	});
   	place.save(function(err) {
   		if(!err) {
   			console.log('Created');
-        res.json({success: true, msg: 'Reservación creada con exito.'});
+        res.json({
+          success: true,
+          msg: 'Negocio creado con exito.',
+          business_data: place
+        });
   		} else {
-  			console.log('ERROR: ' + err);
-        return res.json({success: false, msg: 'No se pudo crear la reservación comunicate con tu admin.', err: err});
+        if(err.code==11000){
+          return res.json({success: false, msg: 'Lugar ya existe.'});
+        }else{
+          return res.json({success: false, msg: "Error del sistema comunicate con tu administrador"});
+        }
   		}
   	});
   	//res.send(place);
@@ -88,8 +91,6 @@ module.exports = function(app) {
   		})
   	});
   }
-
-
   //Link routes and functions
   app.get('/places', findAllPlaces);
   app.get('/place/:id', findById);
