@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "nodemon ./bin/www"
   },
   "dependencies": {
     "body-parser": "~1.15.1",
@@ -17,7 +17,8 @@
     "morgan": "~1.7.0",
     "passport": "latest",
     "passport-jwt": "latest",
-    "serve-favicon": "~2.3.0"
+    "serve-favicon": "~2.3.0",
+    "nodejs-aes256": "latest"
   },
   "description": "API PARA EL SISTEMA DE RESERVACIONES DE ESTABLECIMIENTOS EN AGUASCALIENTES",
   "main": "app.js",

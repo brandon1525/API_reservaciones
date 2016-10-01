@@ -2,15 +2,43 @@ module.exports = function(app) {
   var Place = require('../models/place');
 
   findAllPlaces = function(req, res) {
-    Place.find().populate('owner').exec(function (err, places) {
+    Place.find({},'_id name description total_people type create_at').exec(function (err, places) {
       if (err) {
         console.log('ERROR: ' + err);
-        return res.json(500, {
-          error: 'no hay lugares'
+        return res.json({
+          success: false,
+          msg: 'no hay lugares'
         });
       }
-      res.json(places);
+      res.json({
+        success: true,
+        places: places
+      });
     });
+  };
+  findAllPlacesGroup = function(req, res) {
+    Place.find({},'_id name description total_people type create_at').exec(function (err, places) {
+      if (err) {
+        console.log('ERROR: ' + err);
+        return res.json({
+          success: false,
+          msg: 'no hay lugares'
+        });
+      }else{
+        var types = {};
+        places.forEach(function(item) {
+          if (!(item.type in types)) {
+            types[item.type]=[];
+          }
+          types[item.type].push(item);
+        });
+        res.json({
+          success: true,
+          places: types
+        });
+      }
+    });
+
   };
 
   //GET - Return a Place with specified ID
@@ -93,6 +121,7 @@ module.exports = function(app) {
   }
   //Link routes and functions
   app.get('/places', findAllPlaces);
+  app.get('/places/grouped', findAllPlacesGroup);
   app.get('/place/:id', findById);
   app.post('/place', addPlace);
   app.put('/place/:id', updatePlace);

@@ -1,5 +1,6 @@
 module.exports = function(app) {
   var User        = require('../models/user');
+  var Place        = require('../models/place');
   var config      = require('../config/database');
   var jwt         = require('jwt-simple');
   //GET - Return all users in the DB
@@ -109,14 +110,56 @@ module.exports = function(app) {
     User.findOne({user: req.body.user}, function(err, user) {
       if (err) throw err;
       if (!user) {
-        res.send({success: false, msg: 'Authentication failed. Usuario no encontrado.'});
+        res.send({success: false, msg: 'Usuario no encontrado.'});
       } else {
         user.comparePassword(req.body.password, function (err, isMatch) {
           if (isMatch && !err) {
             var token = jwt.encode(user, config.secret);
-            res.json({success: true, token: 'JWT ' + token, user: user});
+            var user_data = {
+              id: user._id,
+              name: user.name,
+              last_name_p: user.last_name_p,
+              last_name_m: user.last_name_m,
+              phone: user.phone,
+              sex: user.sex,
+              date_b: user.date_b,
+              type_user: user.type_user,
+              user: user.user
+            };
+            if(user.type_user==0){
+              res.json(
+                {
+                  success: true,
+                  token: 'JWT ' + token,
+                  user_data: user_data
+                }
+              );
+            }else if(user.type_user==1){
+              Place.findOne({owner: user._id}).populate('owner').exec(function (err, place) {
+                if (err) {
+                  console.log('ERROR: ' + err);
+                  return res.json({success: false, error: 'No hay establecimiento para este usuario'});
+                }else{
+                  res.json(
+                    {
+                      success: true,
+                      token: 'JWT ' + token,
+                      user_data: user_data,
+                      business_data: {
+                        id: place._id,
+                        name: place.name,
+                        description: place.description,
+                        total_people: place.total_people,
+                        type: place.type,
+                        create_at: place.create_at
+                      }
+                    }
+                  );
+                }
+              });
+            }
           } else {
-            res.send({success: false, msg: 'Authentication failed. Password incorrecto.'});
+            res.send({success: false, msg: 'Password incorrecto.'});
           }
         });
       }
