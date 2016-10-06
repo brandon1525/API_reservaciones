@@ -9,6 +9,7 @@ var bodyParser 			= require('body-parser');
 var mongoose 				= require('mongoose');
 var jwt							= require('jwt-simple');
 var aes256          = require('nodejs-aes256');
+var cors            = require('cors')
 var app = express();
 
 // log to console
@@ -35,7 +36,7 @@ app.use(morgan('dev'));
 
 // Use the passport package in our application
 app.use(passport.initialize());
-
+app.use(cors());
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');

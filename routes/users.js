@@ -1,6 +1,6 @@
 module.exports = function(app) {
   var User        = require('../models/user');
-  var Place        = require('../models/place');
+  var Place       = require('../models/place');
   var config      = require('../config/database');
   var jwt         = require('jwt-simple');
   //GET - Return all users in the DB
@@ -78,16 +78,35 @@ module.exports = function(app) {
       user.phone = req.body.phone;
   		user.sex = req.body.sex;
   		user.date_b = req.body.date_b;
-      user.type_user = req.body.type_user;
       user.user = req.body.user;
-      user.password = req.body.password;
+      if(req.body.password!=""){
+        user.password = req.body.password;
+      }
   		user.save(function(err) {
   			if(!err) {
   				console.log('Actualizado');
+          res.json({
+            success: true,
+            msg: 'Usuario actualizado con exito.',
+            user_data: {
+              id: user._id,
+              name: user.name,
+              last_name_p: user.last_name_p,
+              last_name_m: user.last_name_m,
+              phone: user.phone,
+              sex: user.sex,
+              date_b: user.date_b,
+              type_user: user.type_user,
+              user: user.user
+            }
+          });
   			} else {
+          res.json({
+            success: false,
+            msg: err
+          });
   				console.log('ERROR: ' + err);
   			}
-  			res.send(user);
   		});
   	});
   }
