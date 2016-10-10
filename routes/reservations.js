@@ -1,5 +1,6 @@
 module.exports = function(app) {
   var Reservation = require('../models/reservation');
+  var QRCode = require('qrcode');
 
   findAllReservations = function(req, res) {
     Reservation.find().populate('user_responsible place').exec(function (err, reservations) {
@@ -10,7 +11,6 @@ module.exports = function(app) {
       res.json(reservations);
     });
   };
-
 
   //GET - Return a Reservation with specified ID
   findById = function(req, res) {
@@ -29,19 +29,29 @@ module.exports = function(app) {
   		user_responsible : req.body.user_responsible,
   		place : req.body.place,
   		date_reservation : req.body.date_reservation,
-      no_people : req.body.no_people,
-  		qr_code : req.body.qr_code
+      no_people : req.body.no_people
   	});
-  	reservation.save(function(err) {
-  		if(!err) {
-  			console.log('Created');
-        res.json({success: true, msg: 'Reservación creada con exito.'});
-  		} else {
-  			console.log('ERROR: ' + err);
-        return res.json({success: false, msg: 'No se pudo crear la reservación comunicate con tu admin.', err: err});
-  		}
-  	});
-  	//res.send(reservation);
+  	reservation.save(function(err, reservation) {
+      if(!err) {
+        console.log('Created');
+        QRCode.toDataURL('http://localhost:3000/reservation/checkin/'+reservation._id+'',"minimum",function(err,url){
+          var qr_code = url;
+          res.json({
+            success : true,
+            msg : 'Reservación creada con exito.',
+            reservation_data : reservation,
+            qr : qr_code
+          });
+        });
+      }else{
+        console.log('ERROR: ' + err);
+        return res.json({
+          success : false,
+          msg : 'No se pudo crear la reservación comunicate con tu admin.',
+          err : err
+        });
+      }
+    });
   };
 
   //PUT - Update a register already exists

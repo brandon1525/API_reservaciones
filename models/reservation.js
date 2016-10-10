@@ -17,12 +17,7 @@ var reservationSchema = new Schema({
 		required: true
 	},
 	no_people : {
-		type : Date,
-		required: true
-	},
-	qr_code : {
-		type : String,
-		unique: true,
+		type : Number,
 		required: true
 	},
 	create_at : {
