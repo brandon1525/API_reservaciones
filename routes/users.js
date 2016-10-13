@@ -45,17 +45,7 @@ module.exports = function(app) {
           {
             success: true,
             msg: 'Usuario creado con exito.',
-            user_data: {
-              id: user._id,
-              name: user.name,
-              last_name_p: user.last_name_p,
-              last_name_m: user.last_name_m,
-              phone: user.phone,
-              sex: user.sex,
-              date_b: user.date_b,
-              type_user: user.type_user,
-              user: user.user
-            }
+            user_data: user
           });
   		} else {
   			console.log('ERROR: ' + err);
@@ -88,17 +78,7 @@ module.exports = function(app) {
           res.json({
             success: true,
             msg: 'Usuario actualizado con exito.',
-            user_data: {
-              id: user._id,
-              name: user.name,
-              last_name_p: user.last_name_p,
-              last_name_m: user.last_name_m,
-              phone: user.phone,
-              sex: user.sex,
-              date_b: user.date_b,
-              type_user: user.type_user,
-              user: user.user
-            }
+            user_data: user
           });
   			} else {
           res.json({

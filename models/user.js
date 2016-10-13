@@ -31,6 +31,24 @@ var userSchema = new Schema({
 		type : Number,
 		required: true
 	},
+	payment_method : {
+		number_card : {
+			type : String
+		},
+		cvv : {
+			type : String
+		},
+		date : {
+			type : String
+		}
+	},
+	last_payment : {
+		type : Date
+	},
+	type_plan : {
+		type : Number,
+		default : 0
+	},
 	user : {
 		type : String,
 		unique : true,
@@ -76,4 +94,9 @@ userSchema.methods.comparePassword = function (passw, cb) {
 	});
 };
 
+userSchema.methods.toJSON = function() {
+  var obj = this.toObject();
+  delete obj.password;
+  return obj;
+}
 module.exports = mongoose.model('User', userSchema);

@@ -1,14 +1,22 @@
 module.exports = function(app) {
   var Reservation = require('../models/reservation');
-  var QRCode = require('qrcode');
+  var QRCode      = require('qrcode');
 
-  findAllReservations = function(req, res) {
-    Reservation.find().populate('user_responsible place').exec(function (err, reservations) {
+  findAllReservationsByUser = function(req, res) {
+    Reservation.find({user_responsible: req.body.user_responsible}).populate('user_responsible place').exec(function (err, reservations) {
       if (err) {
         console.log('ERROR: ' + err);
-        return res.json(500, {error: 'no hay reservaciones'});
+        return res.json({
+          success : false,
+          msg : 'No hay reservaciones de este usuario',
+          err : err
+        });
+      }else{
+        res.json({
+          success: true,
+          reservations: reservations
+        });
       }
-      res.json(reservations);
     });
   };
 
@@ -51,6 +59,7 @@ module.exports = function(app) {
           err : err
         });
       }
+
     });
   };
 
@@ -93,7 +102,7 @@ module.exports = function(app) {
 
 
   //Link routes and functions
-  app.get('/reservations', findAllReservations);
+  app.post('/reservations/user', findAllReservationsByUser);
   app.get('/reservation/:id', findById);
   app.post('/reservation', addReservation);
   app.put('/reservation/:id', updateReservation);

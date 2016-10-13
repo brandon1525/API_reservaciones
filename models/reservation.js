@@ -20,6 +20,15 @@ var reservationSchema = new Schema({
 		type : Number,
 		required: true
 	},
+	registry: {
+		type: Boolean,
+		default: false
+	},
+	cancel: {
+		type: Boolean,
+		required: true,
+		default: false
+	},
 	create_at : {
 		type: Date,
 		default: Date.now
