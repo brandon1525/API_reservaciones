@@ -114,7 +114,50 @@ module.exports = function(app) {
         //res.send(reservation);
   		})
   	});
-  }
+  };
+
+  monthReservation = function(req, res){
+    console.log("last_month : "+req.body.last_month);
+    console.log("current_month : "+req.body.current_month);
+    Reservation.find({$and : [{place: req.body.place},{date_reservation: {"$gte": req.body.last_month , "$lt": req.body.current_month}}]}).populate('user_responsible').sort({date_reservation: 'asc'}).exec(function(err, reservations){
+      if (err) {
+        console.log('ERROR: ' + err);
+        return res.json({
+          success : false,
+          msg : 'Error al recuperar reservaciones del mes',
+          err : err
+        });
+      }else{
+        res.json({
+          success: true,
+          msg : "Cargadas exitosamente meses",
+          reservations: reservations
+        });
+      }
+    });
+  };
+
+  dayReservation = function(req, res){
+    console.log("last_day : "+req.body.last_day);
+    console.log("current_day : "+req.body.current_day);
+    Reservation.find({$and : [{place: req.body.place},{date_reservation: {"$gte": req.body.last_day , "$lt": req.body.current_day}}]}).populate('user_responsible').sort({date_reservation: 'asc'}).exec(function(err, reservations){
+      if (err) {
+        console.log('ERROR: ' + err);
+        return res.json({
+          success : false,
+          msg : 'Error al recuperar reservaciones del dia',
+          err : err
+        });
+      }else{
+        res.json({
+          success: true,
+          msg : "Cargadas exitosamente dia",
+          reservations: reservations
+        });
+      }
+    });
+  };
+
 
 
   //Link routes and functions
@@ -122,6 +165,8 @@ module.exports = function(app) {
   app.get('/reservation/:id', findById);
   app.post('/reservation', addReservation);
   app.post('/reservation/cancel', cancelReservation);
+  app.post('/reservations/place/month', monthReservation);
+  app.post('/reservations/place/day', dayReservation);
   app.put('/reservation/:id', updateReservation);
   app.delete('/reservation/:id', deleteReservation);
 

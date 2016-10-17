@@ -27,7 +27,7 @@ var placeSchema = new Schema({
 	payment_method : {
 		number_card : {
 			type : String,
-			default : "0000 0000 0000 0000"
+			default : "0000000000000000"
 		},
 		cvv : {
 			type : String,

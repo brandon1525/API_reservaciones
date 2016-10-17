@@ -60,7 +60,13 @@ module.exports = function(app) {
   		description : req.body.description,
   		total_people : req.body.total_people,
       type : req.body.type,
-      owner : req.body.owner
+      owner : req.body.owner,
+      payment_method: {
+        number_card :  req.body.number_card,
+        cvv :  req.body.cvv,
+        date :  req.body.date
+      },
+      type_plan :  req.body.type_plan
   	});
   	place.save(function(err) {
   		if(!err) {
