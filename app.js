@@ -8,7 +8,6 @@ var cookieParser 		= require('cookie-parser');
 var bodyParser 			= require('body-parser');
 var mongoose 				= require('mongoose');
 var jwt							= require('jwt-simple');
-var aes256          = require('nodejs-aes256');
 var cors            = require('cors');
 var QRCode          = require('qrcode');
 var app             = express();
@@ -51,7 +50,6 @@ var users = require('./routes/users')(app);
 var places = require('./routes/places')(app);
 var reservations = require('./routes/reservations')(app);
 
-var encrypt = require('./routes/aes')(app);
 //var login = require('./routes/login')(app);
 
 app.use('/', routes);

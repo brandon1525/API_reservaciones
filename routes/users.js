@@ -38,6 +38,10 @@ module.exports = function(app) {
       user : req.body.user,
       password : req.body.password
   	});
+    if(req.body.type_user==1){
+      user.payment_method = req.body.payment_method;
+      user.type_plan = req.body.type_plan;
+    }
   	user.save(function(err) {
   		if(!err) {
   			console.log('Created');
@@ -45,7 +49,17 @@ module.exports = function(app) {
           {
             success: true,
             msg: 'Usuario creado con exito.',
-            user_data: user
+            user_data: {
+              id: user._id,
+              name: user.name,
+              last_name_p: user.last_name_p,
+              last_name_m: user.last_name_m,
+              phone: user.phone,
+              sex: user.sex,
+              date_b: user.date_b,
+              type_user: user.type_user,
+              user: user.user
+            }
           });
   		} else {
   			console.log('ERROR: ' + err);
@@ -134,7 +148,7 @@ module.exports = function(app) {
                 }
               );
             }else if(user.type_user==1){
-              Place.findOne({owner: user._id}).populate('owner').exec(function (err, place) {
+              Place.findOne({owner: user._id}).exec(function (err, place) {
                 if (err) {
                   console.log('ERROR: ' + err);
                   return res.json({success: false, error: 'No hay establecimiento para este usuario'});
@@ -144,14 +158,7 @@ module.exports = function(app) {
                       success: true,
                       token: 'JWT ' + token,
                       user_data: user_data,
-                      business_data: {
-                        id: place._id,
-                        name: place.name,
-                        description: place.description,
-                        total_people: place.total_people,
-                        type: place.type,
-                        create_at: place.create_at
-                      }
+                      business_data: place
                     }
                   );
                 }

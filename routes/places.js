@@ -87,10 +87,9 @@ module.exports = function(app) {
       place.name = req.body.name;
   		place.description = req.body.description;
   		place.total_people = req.body.total_people;
-      place.lat = req.body.lat;
-  		place.lon = req.body.lon;
       place.type = req.body.type;
-      place.owner = req.body.owner;
+      place.payment_method = req.body.payment_method;
+      place.type_plan = req.body.type_plan;
   		place.save(function(err) {
   			if(!err) {
   				//console.log('Actualizado');

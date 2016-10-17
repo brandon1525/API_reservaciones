@@ -31,24 +31,6 @@ var userSchema = new Schema({
 		type : Number,
 		required: true
 	},
-	payment_method : {
-		number_card : {
-			type : String
-		},
-		cvv : {
-			type : String
-		},
-		date : {
-			type : String
-		}
-	},
-	last_payment : {
-		type : Date
-	},
-	type_plan : {
-		type : Number,
-		default : 0
-	},
 	user : {
 		type : String,
 		unique : true,

@@ -3,7 +3,7 @@ module.exports = function(app) {
   var QRCode      = require('qrcode');
 
   findAllReservationsByUser = function(req, res) {
-    Reservation.find({user_responsible: req.body.user_responsible}).populate('user_responsible place').exec(function (err, reservations) {
+    Reservation.find({user_responsible: req.body.user_responsible}).populate('user_responsible place').sort({date_reservation: 'desc'}).exec(function (err, reservations) {
       if (err) {
         console.log('ERROR: ' + err);
         return res.json({
@@ -63,6 +63,22 @@ module.exports = function(app) {
     });
   };
 
+  cancelReservation = function(req, res) {
+    Reservation.findOne({$and: [{_id: req.body.id_reservation},{user_responsible: req.body.user_id}]}, function(err, reservation) {
+      reservation.cancel = true;
+  		reservation.save(function(err) {
+  			if(!err) {
+  				//console.log('Actualizado');
+          res.json({success: true, msg: 'Cancelada con exito.'});
+  			} else {
+  				console.log('ERROR: ' + err);
+          return res.json({success: false, msg: 'No se pudo cancelar la reservación.', err: err});
+  			}
+  			//res.send(reservation);
+  		});
+  	});
+  };
+
   //PUT - Update a register already exists
   updateReservation = function(req, res) {
   	Reservation.findById(req.params.id, function(err, reservation) {
@@ -105,6 +121,7 @@ module.exports = function(app) {
   app.post('/reservations/user', findAllReservationsByUser);
   app.get('/reservation/:id', findById);
   app.post('/reservation', addReservation);
+  app.post('/reservation/cancel', cancelReservation);
   app.put('/reservation/:id', updateReservation);
   app.delete('/reservation/:id', deleteReservation);
 
