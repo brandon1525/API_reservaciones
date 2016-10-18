@@ -79,6 +79,22 @@ module.exports = function(app) {
   	});
   };
 
+  checkinReservation = function(req, res) {
+    Reservation.findOne({_id: req.params.id_reservation}, function(err, reservation) {
+      reservation.registry = true;
+  		reservation.save(function(err) {
+  			if(!err) {
+  				//console.log('Actualizado');
+          res.json({success: true, msg: 'Registrada con exito.'});
+  			} else {
+  				console.log('ERROR: ' + err);
+          return res.json({success: false, msg: 'No se pudo cancelar la reservación.', err: err});
+  			}
+  			//res.send(reservation);
+  		});
+  	});
+  };
+
   //PUT - Update a register already exists
   updateReservation = function(req, res) {
   	Reservation.findById(req.params.id, function(err, reservation) {
@@ -128,10 +144,18 @@ module.exports = function(app) {
           err : err
         });
       }else{
+        var days = {};
+        reservations.forEach(function(item){
+          var dia = item.date_reservation.getFullYear()+"/"+item.date_reservation.getMonth()+"/"+item.date_reservation.getDate();
+          if(!(dia in days)){
+            days[dia] = [];
+          }
+          days[dia].push(item);
+        });
         res.json({
           success: true,
           msg : "Cargadas exitosamente meses",
-          reservations: reservations
+          reservations: days
         });
       }
     });
@@ -165,6 +189,7 @@ module.exports = function(app) {
   app.get('/reservation/:id', findById);
   app.post('/reservation', addReservation);
   app.post('/reservation/cancel', cancelReservation);
+  app.post('/reservation/checkin/:id_reservation', checkinReservation);
   app.post('/reservations/place/month', monthReservation);
   app.post('/reservations/place/day', dayReservation);
   app.put('/reservation/:id', updateReservation);
