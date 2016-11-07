@@ -44,11 +44,10 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-var routes = require('./routes/index');
-
-var users = require('./routes/users')(app);
-var places = require('./routes/places')(app);
-var reservations = require('./routes/reservations')(app);
+var routes        = require('./routes/index');
+var users         = require('./routes/users')(app);
+var places        = require('./routes/places')(app);
+var reservations  = require('./routes/reservations')(app);
 
 //var login = require('./routes/login')(app);
 

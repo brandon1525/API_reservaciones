@@ -2,6 +2,25 @@ module.exports = function(app) {
   var Reservation = require('../models/reservation');
   var QRCode      = require('qrcode');
 
+  var server = require('http').Server(app);
+  var io = require('socket.io')(server);
+  server.listen(8080);
+
+  io.on('connection', function (socket) {
+    //console.log("Alguien se ha conectado con sockets");
+    socket.on('Administrador_conectado',function(name){
+      socket.join(name);
+      console.log("Establecimiento conectado : "+name);
+      socket.emit('recibido', true);
+    });
+    //socket.emit('notification_reservation', 'Nueva reservacion');
+    /*socket.on('new_notification', function (reservacion) {
+      console.log(reservacion);
+      io.sockets.emit('notification_reservation', 'Nueva reservacion');
+    });*/
+
+  });
+
   findAllReservationsByUser = function(req, res) {
     Reservation.find({user_responsible: req.body.user_responsible}).populate('user_responsible place').sort({date_reservation: 'desc'}).exec(function (err, reservations) {
       if (err) {
@@ -39,6 +58,8 @@ module.exports = function(app) {
   		date_reservation : req.body.date_reservation,
       no_people : req.body.no_people
   	});
+    io.to(req.body.place).emit('notification_reservation');
+    console.log(req.body.place);
   	reservation.save(function(err, reservation) {
       if(!err) {
         console.log('Created');

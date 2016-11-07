@@ -52,6 +52,29 @@ module.exports = function(app) {
       }
     });
   };
+  status_payment = function(req, res){
+    Place.findById(req.params.id).populate('owner').exec(function (err, place) {
+      if(err){
+        console.log('ERROR: ' + err);
+        return res.json(500, {error: 'no hay lugares'});
+      }else{
+        var now = new Date();
+        now.setMonth(now.getMonth()-1);
+        var last = place.last_payment;
+        if(now.getMonth() > last.getMonth()){
+          return res.json({
+            success: true,
+            state: false
+          });
+        }else{
+          return res.json({
+            success: true,
+            state: true
+          });
+        }
+      }
+    });
+  };
 
   //POST - Insert a new Place in the DB
   addPlace = function(req, res) {
@@ -94,8 +117,28 @@ module.exports = function(app) {
   		place.description = req.body.description;
   		place.total_people = req.body.total_people;
       place.type = req.body.type;
-      place.payment_method = req.body.payment_method;
+      place.payment_method = {
+        number_card :  req.body.number_card,
+        cvv :  req.body.cvv,
+        date :  req.body.date
+      };
       place.type_plan = req.body.type_plan;
+  		place.save(function(err) {
+  			if(!err) {
+  				//console.log('Actualizado');
+          res.json({success: true, msg: 'Actualizado con exito.'});
+  			} else {
+  				console.log('ERROR: ' + err);
+          return res.json({success: false, msg: 'No se pudo actializar el establecimiento.', err: err});
+  			}
+  			//res.send(place);
+  		});
+  	});
+  }
+
+  update_status_payment = function(req, res){
+    Place.findById(req.body.id, function(err, place) {
+      place.last_payment = Date.now();
   		place.save(function(err) {
   			if(!err) {
   				//console.log('Actualizado');
@@ -124,11 +167,14 @@ module.exports = function(app) {
   		})
   	});
   }
+
   //Link routes and functions
   app.get('/places', findAllPlaces);
   app.get('/places/grouped', findAllPlacesGroup);
   app.get('/place/:id', findById);
+  app.get('/place/:id/status_payment', status_payment);
   app.post('/place', addPlace);
+  app.put('/place/status_payment', update_status_payment);
   app.put('/place/:id', updatePlace);
   app.delete('/place/:id', deletePlace);
 

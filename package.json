@@ -20,7 +20,8 @@
     "passport": "latest",
     "passport-jwt": "latest",
     "serve-favicon": "~2.3.0",
-    "qrcode": "latest"
+    "qrcode": "latest",
+    "socket.io": "latest"
   },
   "description": "API PARA EL SISTEMA DE RESERVACIONES DE ESTABLECIMIENTOS EN AGUASCALIENTES",
   "main": "app.js",
