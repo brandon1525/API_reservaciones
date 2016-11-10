@@ -39,6 +39,32 @@ module.exports = function(app) {
     });
   };
 
+  findAllReservationsByUserHours = function(req, res) {
+    Reservation.find({place: req.body.place}).sort({date_reservation: 'desc'}).exec(function (err, reservations) {
+      if (err) {
+        console.log('ERROR: ' + err);
+        return res.json({
+          success : false,
+          msg : 'No hay reservaciones de este usuario',
+          err : err
+        });
+      }else{
+        var hours = {};
+        reservations.forEach(function(item){
+          var hour = item.date_reservation.getHours();
+          if(!(hour in hours)){
+            hours[hour] = [];
+          }
+          hours[hour].push(item);
+        });
+        res.json({
+          success: true,
+          hours: hours
+        });
+      }
+    });
+  };
+
   //GET - Return a Reservation with specified ID
   findById = function(req, res) {
   	Reservation.findById(req.params.id, function(err, reservation) {
@@ -59,7 +85,6 @@ module.exports = function(app) {
       no_people : req.body.no_people
   	});
     io.to(req.body.place).emit('notification_reservation');
-    console.log(req.body.place);
   	reservation.save(function(err, reservation) {
       if(!err) {
         console.log('Created');
@@ -207,6 +232,7 @@ module.exports = function(app) {
 
   //Link routes and functions
   app.post('/reservations/user', findAllReservationsByUser);
+  app.post('/reservations/user/hours', findAllReservationsByUserHours);
   app.get('/reservation/:id', findById);
   app.post('/reservation', addReservation);
   app.post('/reservation/cancel', cancelReservation);
