@@ -7,6 +7,7 @@ module.exports = function(app) {
   server.listen(8080);
 
   io.on('connection', function (socket) {
+    console.log(socket);
     //console.log("Alguien se ha conectado con sockets");
     socket.on('Administrador_conectado',function(name){
       socket.join(name);
