@@ -4,7 +4,7 @@ module.exports = function(app) {
 
   var server = require('https').Server(app);
   var io = require('socket.io')(server);
-  server.listen(443);
+  server.listen(8080);
 
   io.on('connection', function (socket) {
     //console.log("Alguien se ha conectado con sockets");
