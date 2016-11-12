@@ -1,8 +1,17 @@
 module.exports = function(app) {
   var Reservation = require('../models/reservation');
   var QRCode      = require('qrcode');
+  var fs = require('fs');
+  //var server = require('https').Server(app);
+  var https = require('https');
 
-  var server = require('https').Server(app);
+  var options = {
+     key  : fs.readFileSync('server.key'),
+     cert : fs.readFileSync('server.crt')
+  };
+
+  var server = https.createServer(options, app);
+
   var io = require('socket.io')(server);
   server.listen(4433);
 
@@ -13,11 +22,6 @@ module.exports = function(app) {
       socket.join(name);
       console.log("Establecimiento conectado : "+name);
       socket.emit('recibido', true);
-    });
-    //socket.emit('notification_reservation', 'Nueva reservacion');
-    socket.on('new_notification', function (reservacion) {
-      console.log(reservacion);
-      io.sockets.emit('notification_reservation', 'Nueva reservacion');
     });
   });
 
