@@ -15,11 +15,10 @@ module.exports = function(app) {
       socket.emit('recibido', true);
     });
     //socket.emit('notification_reservation', 'Nueva reservacion');
-    /*socket.on('new_notification', function (reservacion) {
+    socket.on('new_notification', function (reservacion) {
       console.log(reservacion);
       io.sockets.emit('notification_reservation', 'Nueva reservacion');
-    });*/
-
+    });
   });
 
   findAllReservationsByUser = function(req, res) {
